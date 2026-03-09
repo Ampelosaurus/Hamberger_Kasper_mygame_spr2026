@@ -75,7 +75,7 @@ class Game:
 
     
     # a method is a function tied to a Class
-
+# path: has all these thing stored and we can use it acess directories and load data
     def load_data(self):
         self.game_dir = path.dirname(__file__)
         self.img_dir = path.join(self.game_dir, 'images')
@@ -90,6 +90,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
         self.all_mobs = pg.sprite.Group()
+        self.all_projectiles = pg.sprite.Group()
         # self.player = Player(self, 15, 15)
         # self.mob = Mob(self, 4, 4)
         # self.goal  = Goal(self, 10, 10)

@@ -36,6 +36,7 @@ class Player(Sprite):
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "sprite_sheet.png"))
         self.load_image()
         self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
@@ -51,6 +52,9 @@ class Player(Sprite):
     def get_keys(self):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
+        if keys[pg.K_f]:
+            print('fired a projectile')
+            p = Projectile(self.game, self.rect.x, self.rect.y)
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -62,8 +66,11 @@ class Player(Sprite):
         if self.vel.x != 0 and self.vel.y != 0:
             self.vel *= 0.7071
     def load_image(self):
-        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(0,TILESIZE,TILESIZE,TILESIZE)]
+        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+        self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
         for frame in self.standing_frames:
+            frame.set_colorkey(BLACK)
+        for frame in self.moving_frames:
             frame.set_colorkey(BLACK)
     def animate(self): #GIF
         now = pg.time.get_ticks()
@@ -77,16 +84,23 @@ class Player(Sprite):
                 self.rect.bottom = bottom
         elif self.jumping:
             pass
+    def state_check(self):
+        if self.vel != vec(0,0):
+            self.moving = True
+        else: 
+            self.moving = False
     def update(self):
-        self.animate()
         self.get_keys()
+        self.state_check()
+        self.animate()
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
-        self. hit_rect.centerx = self.pos.x
+        self.hit_rect.centerx = self.pos.x
         collide_with_walls(self, self.game.all_walls, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.all_walls, 'y')
-        self.rect.center -= self.hit_rect.center
+        self.rect.center = self.hit_rect.center
+
 
 # This function checks for x and y collisions in sequence and sets the position 
 
@@ -100,20 +114,23 @@ class Mob(Sprite):
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = vec(0,0)
+        self.vel = vec(1,0)
         self.pos = vec(x,y) * TILESIZE
-        self.rect.center = self.pos
-    # def update(self):
-    #     pass
+        self.speed = 10
     def update(self):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
         if hits:
-             print("collided")
-             #self.pos += self.speed * self.vel 
-        self.pos -= self.game.player.pos*self.game.dt
+            print("collided")
+            self.speed -=1
+            self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
+            self.rect = self.new_rect
+            self.image.fill(RED)
+        if self.rect.x > WIDTH or self.rect.x < 0:
+            self.speed *= -1
+            self.pos.y += TILESIZE
+        self.pos += self.speed * self.vel
         self.rect.center = self.pos
-        self.pos += self.vel * self.game.dt
-        self.vel = vec(480,480)
+        
 
 class Goal(Sprite):
     def __init__(self, game, x, y):
@@ -167,3 +184,20 @@ class Coin(Sprite):
         self.score = 0
     def update(self):
         pass
+
+class Projectile(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.vel = vec(1,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = 10
+        print('Im a real projectile')
+    def update(self):
+        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
+        self.pos += self.speed * self.vel
+        self.rect.center = self.pos
