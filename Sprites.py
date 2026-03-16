@@ -120,8 +120,7 @@ class Mob(Sprite):
     def update(self):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
         if hits:
-            print("collided")
-            self.speed -=1
+            self.speed = 5
             self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
             self.rect = self.new_rect
             self.image.fill(RED)
@@ -132,27 +131,27 @@ class Mob(Sprite):
         self.rect.center = self.pos
         
 
-class Goal(Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites
-        Sprite.__init__(self, self.groups)
-        self.game = game
+# class Goal(Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_sprites
+#         Sprite.__init__(self, self.groups)
+#         self.game = game
        
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
-        self.vel = vec(0,0)
-        self.pos = vec(x,y) * TILESIZE
-        self.rect.topleft = self.pos
-        self.score = 0
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(GREEN)
+#         self.rect = self.image.get_rect()
+#         self.vel = vec(0,0)
+#         self.pos = vec(x,y) * TILESIZE
+#         self.rect.topleft = self.pos
+#         self.score = 0
  
  
-    def update(self):
-        self.rect.center = self.pos
-        if self.rect.colliderect(self.game.mob.rect):
-            self.score += 1
-            print(self.score)
-            print("GOALLL")
+#     def update(self):
+#         self.rect.center = self.pos
+#         if self.rect.colliderect(self.game.mob.rect):
+#             self.score += 1
+#             print(self.score)
+#             print("GOALLL")
 
 # objects
 class Wall(Sprite):
@@ -201,3 +200,9 @@ class Projectile(Sprite):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
         self.pos += self.speed * self.vel
         self.rect.center = self.pos
+
+#Mob ideas:
+# Elm Leaf Beetle - generic enemy that chases player
+# Garden Snail - slower but more health
+# Small White - bypass walls but less health
+# Mediterranean Mantis - Boss that can rush forward and can also bypass walls, but takes longer to bypass them
