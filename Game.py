@@ -32,35 +32,13 @@ class Game:
         self.Player_img = pg.image.load(path.join(self.img_dir, 'sprite_sheet.png')).convert_alpha()
         self.map = Map(path.join(self.game_dir, map))
                     
-
-    def new(self):
-        self.load_data(self.levels[0])
-        # builds the level
-        self.all_sprites = pg.sprite.Group()
-        self.all_walls = pg.sprite.Group()
-        self.all_mobs = pg.sprite.Group()
-        self.all_projectiles = pg.sprite.Group()
-        self.all_powerups = pg.sprite.Group()
-        self.map = Map(path.join(self. map))
-        for row, tiles in enumerate(self.map.data):
-            for col, tile, in enumerate(tiles):
-                if tile == '1':
-                     # call class constructor without assiging variable...when
-                     Wall(self, col, row)
-                if tile == 'P':
-                     self.player = Player(self, col, row)
-                if tile == 'M':
-                     Mob(self, col, row)
-                    
-        self.run()
-
     def next_level(self, map):
         for w in self.all_walls:
             w.kill()
         for m in self.all_mobs:
             m.kill()
-        # for p in self.all_powerups:
-        #     p.kill()
+        for p in self.all_powerups:
+            p.kill()
         self.player.kill()
         self.load_data(map)
         # builds the level
@@ -77,6 +55,27 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+
+    def new(self):
+        self.load_data(self.levels[0])
+        # builds the level
+        self.all_sprites = pg.sprite.Group()
+        self.all_walls = pg.sprite.Group()
+        self.all_mobs = pg.sprite.Group()
+        self.all_projectiles = pg.sprite.Group()
+        self.all_powerups = pg.sprite.Group()
+        for row, tiles in enumerate(self.map.data):
+            for col, tile, in enumerate(tiles):
+                if tile == '1':
+                     # call class constructor without assiging variable...when
+                     Wall(self, col, row)
+                if tile == 'P':
+                     self.player = Player(self, col, row)
+                if tile == 'M':
+                     Mob(self, col, row)
+                    
+        self.run()
+
     def run(self):
         while self.running:
             self.dt = self.clock.tick(FPS) / 1000
@@ -108,13 +107,17 @@ class Game:
 
     def update(self):
         self.all_sprites.update()
-        if len(self.all_powerups) < 1:
-            self.current_level+=1
-            self.next_level(self.levels[self.current_level])
+        if len(self.all_mobs) == 0:
+            self.current_level +=1
+            if self.current_level < len(self.levels)-1:
+                self.current_level = 0
+            else:
+                self.next_level(self.levels[self.current_level])
+                
 
     
     def draw(self):
-        self.screen.fill(BLUE)
+        self.screen.fill(BROWN)
         self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
         self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
         # self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT-TILESIZE*3)
@@ -133,11 +136,7 @@ if __name__ == "__main__":
     g = Game()
 
 while g.running:
-    g = Game()
-    g.new(g.levels[g.current_level])
-    g.new(g.levels[g.current_level])
-    g.run()
-    pg.quit()
+    g.new()
 
 
 pg.quit()

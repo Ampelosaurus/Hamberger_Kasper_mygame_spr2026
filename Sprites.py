@@ -72,18 +72,18 @@ class Player(Sprite):
             frame.set_colorkey(BLACK)
         for frame in self.moving_frames:
             frame.set_colorkey(BLACK)
-    def animate(self): #GIF
-        now = pg.time.get_ticks()
-        if not self.jumping and not self.walking:
-            if now - self.last_update > 350:
-                self.last_update = now
-                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
-                bottom = self.rect.bottom
-                self.image = self.standing_frames[self.current_frame]
-                self.rect = self.image.get_rect()
-                self.rect.bottom = bottom
-        elif self.jumping:
-            pass
+    # def animate(self): #GIF
+    #     now = pg.time.get_ticks()
+    #     if not self.jumping and not self.walking:
+    #         if now - self.last_update > 350:
+    #             self.last_update = now
+    #             self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+    #             bottom = self.rect.bottom
+    #             self.image = self.standing_frames[self.current_frame]
+    #             self.rect = self.image.get_rect()
+    #             self.rect.bottom = bottom
+    #    elif self.jumping:
+    #        pass
     def state_check(self):
         if self.vel != vec(0,0):
             self.moving = True
@@ -92,7 +92,7 @@ class Player(Sprite):
     def update(self):
         self.get_keys()
         self.state_check()
-        self.animate()
+        #self.animate()
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
         self.hit_rect.centerx = self.pos.x
@@ -105,10 +105,11 @@ class Player(Sprite):
 # This function checks for x and y collisions in sequence and sets the position 
 
 
-# enemy
+# enemies
 class Mob(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
+        self.group = game.all_mobs
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -117,6 +118,31 @@ class Mob(Sprite):
         self.vel = vec(1,0)
         self.pos = vec(x,y) * TILESIZE
         self.speed = 10
+    def update(self):
+        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
+        if hits:
+            self.speed = 5
+            self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
+            self.rect = self.new_rect
+            self.image.fill(RED)
+        if self.rect.x > WIDTH or self.rect.x < 0:
+            self.speed *= -1
+            self.pos.y += TILESIZE
+        self.pos += self.speed * self.vel
+        self.rect.center = self.pos
+
+class Snail(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites
+        self.group = game.all_mobs
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.vel = vec(1,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = 5
     def update(self):
         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
         if hits:

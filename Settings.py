@@ -12,7 +12,7 @@ PLAYER_HIT_RECT = pg.Rect(0,0,TILESIZE,TILESIZE)
 # color values
 
 # tuple storing RGB values
-BLUE = (0,0,255)
+BROWN = (60.78,46.27,32.55)
 WHITE = (255,255,255)
 RED = (255,0,0)
 GREEN = (0,255,0)
