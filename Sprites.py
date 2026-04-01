@@ -113,6 +113,10 @@ class Mob(Sprite): #Elm Leaf Beetle
         Sprite.__init__(self, self.groups)
         self.game = game
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Mob_Sprite.png"))
+        self.load_image()
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
+        self.rect = self.image.get_rect()
         self.vel = vec(1,0)
         self.pos = vec(x,y) * TILESIZE
         self.speed = 1
@@ -129,11 +133,14 @@ class Mob(Sprite): #Elm Leaf Beetle
         #     self.pos.y += TILESIZE
         self.vel = self.game.player.vel * self.game.dt
         self.pos += self.speed * self.vel
-        # self.hit_rect.centerx = self.pos.x
-        # collide_with_walls(self, self.game.all_walls, 'x')
-        # self.hit_rect.centery = self.pos.y
-        # collide_with_walls(self, self.game.all_walls, 'y')
-        # self.rect.center = self.hit_rect.center
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.all_walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.all_walls, 'y')
+        self.rect.center = self.hit_rect.center
+    def load_image(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+        self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
 class Snail(Sprite):
     def __init__(self, game, x, y):
