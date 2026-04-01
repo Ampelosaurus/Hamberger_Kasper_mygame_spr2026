@@ -26,6 +26,7 @@ class Game:
     # a method is a function tied to a Class
 # path: has all these thing stored and we can use it acess directories and load data
     def load_data(self, map):
+        # allows images to be generated
         self.game_dir = path.dirname(__file__)
         self.img_dir = path.join(self.game_dir, 'images')
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Wall.png')).convert_alpha()
@@ -34,6 +35,7 @@ class Game:
         self.map = Map(path.join(self.game_dir, map))
                     
     def next_level(self, map):
+        # deletes all objects so they don't appear in the next level
         for w in self.all_walls:
             w.kill()
         for m in self.all_mobs:
@@ -43,14 +45,11 @@ class Game:
         self.player.kill()
         self.load_data(map)
         # builds the level
-        # self.player = Player(self, 15, 15)
-        # self.mob = Mob(self, 4, 4)
-        # self.goal  = Goal(self, 10, 10)
         # loops through every tile type on the map and creates the sprites
         for row, tiles in enumerate(self.map.data):
+            # assigns a symbol for each object and generates said object when it detects the symbol
             for col, tile, in enumerate(tiles):
                 if tile == '1':
-                    # call class constructor without assiging variable...when
                     Wall(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
@@ -85,6 +84,7 @@ class Game:
             self.draw() # render
 
     def events(self):
+        # detects all key presses and if it is running
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 if self.playing:
@@ -107,6 +107,7 @@ class Game:
         pass
 
     def update(self):
+        # changes levels, doesn't work for now
         self.all_sprites.update()
         if len(self.all_mobs) == 0:
             self.current_level +=1
