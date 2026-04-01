@@ -52,9 +52,9 @@ class Player(Sprite):
     def get_keys(self):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
-        if keys[pg.K_f]:
-            print('fired a projectile')
-            p = Projectile(self.game, self.rect.x, self.rect.y)
+        # if keys[pg.K_f]:
+        #     print('fired a projectile')
+        #     p = Projectile(self.game, self.rect.x, self.rect.y)
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -68,10 +68,10 @@ class Player(Sprite):
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
         self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
-        for frame in self.standing_frames:
-            frame.set_colorkey(BLACK)
-        for frame in self.moving_frames:
-            frame.set_colorkey(BLACK)
+        # for frame in self.standing_frames:
+        #     frame.set_colorkey(BLACK)
+        # for frame in self.moving_frames:
+        #     frame.set_colorkey(BLACK)
     # def animate(self): #GIF
     #     now = pg.time.get_ticks()
     #     if not self.jumping and not self.walking:
@@ -106,30 +106,34 @@ class Player(Sprite):
 
 
 # enemies
-class Mob(Sprite):
+class Mob(Sprite): #Elm Leaf Beetle
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
         self.group = game.all_mobs
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
-        self.rect = self.image.get_rect()
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Mob_Sprite.png"))
         self.vel = vec(1,0)
         self.pos = vec(x,y) * TILESIZE
-        self.speed = 10
+        self.speed = 1
+        self.hit_rect = PLAYER_HIT_RECT
     def update(self):
-        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
-        if hits:
-            self.speed = 5
-            self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
-            self.rect = self.new_rect
-            self.image.fill(RED)
-        if self.rect.x > WIDTH or self.rect.x < 0:
-            self.speed *= -1
-            self.pos.y += TILESIZE
+        # hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
+        # if hits:
+        #     self.speed = 5
+        #     self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
+        #     self.rect = self.new_rect
+        #     self.image.fill(RED)
+        # if self.rect.x > WIDTH or self.rect.x < 0:
+        #     self.speed *= -1
+        #     self.pos.y += TILESIZE
+        self.vel = self.game.player.vel * self.game.dt
         self.pos += self.speed * self.vel
-        self.rect.center = self.pos
+        # self.hit_rect.centerx = self.pos.x
+        # collide_with_walls(self, self.game.all_walls, 'x')
+        # self.hit_rect.centery = self.pos.y
+        # collide_with_walls(self, self.game.all_walls, 'y')
+        # self.rect.center = self.hit_rect.center
 
 class Snail(Sprite):
     def __init__(self, game, x, y):
@@ -144,7 +148,7 @@ class Snail(Sprite):
         self.pos = vec(x,y) * TILESIZE
         self.speed = 5
     def update(self):
-        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
+        hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
         if hits:
             self.speed = 5
             self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
@@ -210,22 +214,22 @@ class Coin(Sprite):
     def update(self):
         pass
 
-class Projectile(Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_projectiles
-        Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
-        self.rect = self.image.get_rect()
-        self.vel = vec(1,0)
-        self.pos = vec(x,y) * TILESIZE
-        self.speed = 10
-        print('Im a real projectile')
-    def update(self):
-        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
-        self.pos += self.speed * self.vel
-        self.rect.center = self.pos
+# class Projectile(Sprite):
+#     def __init__(self, game, x, y):
+#         self.groups = game.all_projectiles
+#         Sprite.__init__(self, self.groups)
+#         self.game = game
+#         self.image = pg.Surface((TILESIZE, TILESIZE))
+#         self.image.fill(RED)
+#         self.rect = self.image.get_rect()
+#         self.vel = vec(1,0)
+#         self.pos = vec(x,y) * TILESIZE
+#         self.speed = 10
+#         print('Im a real projectile')
+#     def update(self):
+#         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
+#         self.pos += self.speed * self.vel
+#         self.rect.center = self.pos
 
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player

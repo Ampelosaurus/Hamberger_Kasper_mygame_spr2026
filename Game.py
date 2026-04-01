@@ -30,6 +30,7 @@ class Game:
         self.img_dir = path.join(self.game_dir, 'images')
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Wall.png')).convert_alpha()
         self.Player_img = pg.image.load(path.join(self.img_dir, 'sprite_sheet.png')).convert_alpha()
+        self.Mob_img = pg.image.load(path.join(self.img_dir, 'Mob_Sprite.png')).convert_alpha()
         self.map = Map(path.join(self.game_dir, map))
                     
     def next_level(self, map):
@@ -118,8 +119,8 @@ class Game:
     
     def draw(self):
         self.screen.fill(BROWN)
-        self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
-        self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
+        # self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
+        # self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
         # self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT-TILESIZE*3)
         self.all_sprites.draw(self.screen)
         pg.display.flip()
