@@ -52,9 +52,10 @@ class Player(Sprite):
     def get_keys(self):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
-        # if keys[pg.K_f]:
-        #     print('fired a projectile')
-        #     p = Projectile(self.game, self.rect.x, self.rect.y)
+        if keys[pg.K_p]:
+            p = Projectile(self.game, self.pos.x, self.pos.y, 1,1)
+            p = Projectile(self.game, self.pos.x, self.pos.y, -1,1)
+            p = Projectile(self.game, self.pos.x, self.pos.y, 1,-1)
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -197,19 +198,20 @@ class Wall(Sprite):
 
 
 class Projectile(Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, velx, vely):
         self.groups = game.all_sprites, game.all_projectiles
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = vec(0,0)
-        self.pos = vec(x,y) * TILESIZE
-        self.speed = 10
-        def update(self):
-            pass
-
+        self.vel = vec(velx, vely)
+        self.pos = vec(x, y) * TILESIZE
+    def update(self):
+        self.vel.x = self.velx
+        self.y = self.vely
+        self.pos.x * self.vel.x * self.game.dt
+        self.rect.center = self.pos
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player
 # Garden Snail - slower but more health
