@@ -94,7 +94,7 @@ class Player(Sprite):
         self.state_check()
         #self.animate()
         # when it collides with a wall, it pushes it back
-        self.rect.center = self.pos
+        self.rect.center = self.pos 
         self.pos += self.vel * self.game.dt
         self.hit_rect.centerx = self.pos.x
         collide_with_walls(self, self.game.all_walls, 'x')
@@ -120,20 +120,19 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.rect = self.image.get_rect()
         self.vel = vec(1,0)
         self.pos = vec(x,y) * TILESIZE
-        self.speed = 1
+        self.speed = PLAYER_SPEED
         self.hit_rect = PLAYER_HIT_RECT
     def update(self):
-        # hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
-        # if hits:
-        #     self.speed = 5
-        #     self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
-        #     self.rect = self.new_rect
-        #     self.image.fill(RED)
-        # if self.rect.x > WIDTH or self.rect.x < 0:
-        #     self.speed *= -1
-        #     self.pos.y += TILESIZE
-        self.vel = self.game.player.vel * self.game.dt
-        self.pos += self.speed * self.vel
+        direction = self.game.player.pos - self.pos
+    
+        # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
+        if direction.length() != 0:
+            direction = direction.normalize()
+        self.vel = direction * self.speed * self.game.dt
+        self.pos += self.vel
+
+        # self.vel = self.game.player.vel * self.game.dt
+        # self.pos += self.speed * self.vel
         self.hit_rect.centerx = self.pos.x
         collide_with_walls(self, self.game.all_walls, 'x')
         self.hit_rect.centery = self.pos.y
@@ -143,30 +142,40 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
         self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
-# class Snail(Sprite):
+# class Snail(Sprite): #Garden Snail
 #     def __init__(self, game, x, y):
 #         self.groups = game.all_sprites
 #         self.group = game.all_mobs
 #         Sprite.__init__(self, self.groups)
 #         self.game = game
+#         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Mob_Sprite.png"))
+#         self.load_image()
 #         self.image = pg.Surface((TILESIZE, TILESIZE))
-#         self.image.fill(RED)
+#         self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
 #         self.rect = self.image.get_rect()
 #         self.vel = vec(1,0)
 #         self.pos = vec(x,y) * TILESIZE
-#         self.speed = 5
+#         self.speed = PLAYER_SPEED/2
+#         self.hit_rect = PLAYER_HIT_RECT
 #     def update(self):
-#         hits = pg.sprite.spritecollide(self, self.game.all_walls, False)
-#         if hits:
-#             self.speed = 5
-#             self.new_rect = pg.Rect(self.pos.x, self.pos.y, 100, 100) 
-#             self.rect = self.new_rect
-#             self.image.fill(RED)
-#         if self.rect.x > WIDTH or self.rect.x < 0:
-#             self.speed *= -1
-#             self.pos.y += TILESIZE
-#         self.pos += self.speed * self.vel
-#         self.rect.center = self.pos
+#         direction = self.game.player.pos - self.pos
+    
+#         # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
+#         if direction.length() != 0:
+#             direction = direction.normalize()
+#         self.vel = direction * self.speed * self.game.dt
+#         self.pos += self.vel
+
+#         # self.vel = self.game.player.vel * self.game.dt
+#         # self.pos += self.speed * self.vel
+#         self.hit_rect.centerx = self.pos.x
+#         collide_with_walls(self, self.game.all_walls, 'x')
+#         self.hit_rect.centery = self.pos.y
+#         collide_with_walls(self, self.game.all_walls, 'y')
+#         self.rect.center = self.hit_rect.center
+#     def load_image(self):
+#         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+#         self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
         
 
 
@@ -187,22 +196,19 @@ class Wall(Sprite):
  
 
 
-# class Projectile(Sprite):
-#     def __init__(self, game, x, y):
-#         self.groups = game.all_projectiles
-#         Sprite.__init__(self, self.groups)
-#         self.game = game
-#         self.image = pg.Surface((TILESIZE, TILESIZE))
-#         self.image.fill(RED)
-#         self.rect = self.image.get_rect()
-#         self.vel = vec(1,0)
-#         self.pos = vec(x,y) * TILESIZE
-#         self.speed = 10
-#         print('Im a real projectile')
-#     def update(self):
-#         hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
-#         self.pos += self.speed * self.vel
-#         self.rect.center = self.pos
+class Projectile(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = 10
+        def update(self):
+            pass
 
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player
