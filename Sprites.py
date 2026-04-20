@@ -53,9 +53,9 @@ class Player(Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_p]:
-            p = Projectile(self.game, self.pos.x, self.pos.y, 1,1)
-            p = Projectile(self.game, self.pos.x, self.pos.y, -1,1)
-            p = Projectile(self.game, self.pos.x, self.pos.y, 1,-1)
+            p = Projectile(self.game, self.pos.x, self.pos.y, vec(1,1))
+            p = Projectile(self.game, self.pos.x, self.pos.y, vec(0,-1))
+            p = Projectile(self.game, self.pos.x, self.pos.y, vec(-1,1))
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -198,19 +198,20 @@ class Wall(Sprite):
 
 
 class Projectile(Sprite):
-    def __init__(self, game, x, y, velx, vely):
+    def __init__(self, game, x, y, vel):
         self.groups = game.all_sprites, game.all_projectiles
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.vel = vec(velx, vely)
-        self.pos = vec(x, y) * TILESIZE
+        self.vel = vel 
+        self.pos = vec(x,y)
+        self.speed = 500
+        self.rect.center = self.pos
+        print("im a real projectile...")
     def update(self):
-        self.vel.x = self.velx
-        self.y = self.vely
-        self.pos.x * self.vel.x * self.game.dt
+        self.pos += self.vel * self.speed * self.game.dt
         self.rect.center = self.pos
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player
