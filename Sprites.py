@@ -209,7 +209,6 @@ class Projectile(Sprite):
         self.pos = vec(x,y)
         self.speed = 500
         self.rect.center = self.pos
-        print("im a real projectile...")
     def update(self):
         self.pos += self.vel * self.speed * self.game.dt
         self.rect.center = self.pos
