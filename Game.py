@@ -21,6 +21,8 @@ class Game:
         self.game_cooldown = Cooldown(5000)
         self.levels = ['level1.txt', 'level2.txt', 'level3.txt']
         self.current_level = 0
+        self.game_over = False
+        self.pricked = 0
 
     
     # a method is a function tied to a Class
@@ -111,15 +113,20 @@ class Game:
         self.all_sprites.update()
         if len(self.all_mobs) == 0:
             self.current_level +=1
-            if self.current_level < len(self.levels)-1:
-                self.current_level = 0
-            else:
-                self.next_level(self.levels[self.current_level])
+            # if self.current_level < len(self.levels)-1:
+            #     self.current_level = 0
+            # else:
+            #     self.next_level(self.levels[self.current_level])
                 
 
     
     def draw(self):
         self.screen.fill(BROWN)
+        if self.game_over:
+            self.draw_text("GAME OVER", 48, WHITE, WIDTH / 2, HEIGHT / 2)
+        else:
+            self.all_sprites.draw(self.screen)
+
         # self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
         # self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
         # self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT-TILESIZE*3)

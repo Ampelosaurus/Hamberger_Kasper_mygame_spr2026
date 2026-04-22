@@ -27,7 +27,7 @@ def collide_with_walls(sprite, group, dir):
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 2
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
-            
+
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -102,6 +102,10 @@ class Player(Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.all_walls, 'y')
         self.rect.center = self.hit_rect.center
+        hits = pg.sprite.spritecollide(self, self.game.all_mobs, True) # dies if it hits a wall
+        if hits:
+            self.kill()
+            self.game.game_over = True
 
 
 # This function checks for x and y collisions in sequence and sets the position 
@@ -110,8 +114,7 @@ class Player(Sprite):
 # enemies
 class Mob(Sprite): #Elm Leaf Beetle
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
-        self.group = game.all_mobs
+        self.groups = game.all_sprites, game.all_mobs
         Sprite.__init__(self, self.groups)
         self.game = game
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Mob_Sprite.png"))
@@ -123,9 +126,9 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.pos = vec(x,y) * TILESIZE
         self.speed = PLAYER_SPEED
         self.hit_rect = PLAYER_HIT_RECT
+        self.pricked = 0
     def update(self):
         direction = self.game.player.pos - self.pos
-    
         # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
         if direction.length() != 0:
             direction = direction.normalize()
@@ -139,9 +142,14 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.all_walls, 'y')
         self.rect.center = self.hit_rect.center
+        insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True)
+        if insect_pin:
+            self.pricked += 1
+            if self.pricked >= 20:
+                self.kill()
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
-        self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
+        #self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
 # class Snail(Sprite): #Garden Snail
 #     def __init__(self, game, x, y):
@@ -212,6 +220,9 @@ class Projectile(Sprite):
     def update(self):
         self.pos += self.vel * self.speed * self.game.dt
         self.rect.center = self.pos
+        if pg.sprite.spritecollideany(self, self.game.all_walls): # deletes itself if it collides with a wall
+            self.kill()
+    
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player
 # Garden Snail - slower but more health
