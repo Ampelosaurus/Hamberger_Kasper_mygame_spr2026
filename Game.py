@@ -113,10 +113,7 @@ class Game:
         self.all_sprites.update()
         if len(self.all_mobs) == 0:
             self.current_level +=1
-            # if self.current_level < len(self.levels)-1:
-            #     self.current_level = 0
-            # else:
-            #     self.next_level(self.levels[self.current_level])
+
                 
 
     
