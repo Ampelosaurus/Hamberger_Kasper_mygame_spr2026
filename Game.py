@@ -23,6 +23,7 @@ class Game:
         self.current_level = 0
         self.game_over = False
         self.pricked = 0
+        alive_mobs = 0
 
     
     # a method is a function tied to a Class
@@ -42,9 +43,9 @@ class Game:
             w.kill()
         for m in self.all_mobs:
             m.kill()
-        for p in self.all_powerups:
-            p.kill()
-        self.player.kill()
+        # for p in self.all_powerups:
+        #     p.kill()
+        # self.player.kill()
         self.load_data(map)
         # builds the level
         # loops through every tile type on the map and creates the sprites
@@ -59,7 +60,7 @@ class Game:
                     Mob(self, col, row)
 
     def new(self):
-        self.load_data(self.levels[0])
+        self.load_data(self.levels[self.current_level])
         # builds the level
         self.all_sprites = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
@@ -109,10 +110,19 @@ class Game:
         pass
 
     def update(self):
-        # changes levels, doesn't work for now
         self.all_sprites.update()
-        if len(self.all_mobs) == 0:
-            self.current_level +=1
+
+        # if len(self.all_mobs) < 1:
+        #     self.current_level = 0
+        # else:
+        #     self.current_level += 1
+
+        if len(self.all_mobs) < 1:
+            if self.current_level >= len(self.levels):
+                self.current_level = 0
+        else:
+            self.current_level += 1
+        self.next_level(self.current_level)
 
                 
 
