@@ -45,7 +45,7 @@ class Game:
             m.kill()
         # for p in self.all_powerups:
         #     p.kill()
-        # self.player.kill()
+        self.player.kill()
         self.load_data(map)
         # builds the level
         # loops through every tile type on the map and creates the sprites
@@ -112,17 +112,13 @@ class Game:
     def update(self):
         self.all_sprites.update()
 
-        # if len(self.all_mobs) < 1:
-        #     self.current_level = 0
-        # else:
-        #     self.current_level += 1
-
         if len(self.all_mobs) < 1:
-            if self.current_level >= len(self.levels):
+            if self.current_level >= len(self.levels)-1:
                 self.current_level = 0
-        else:
-            self.current_level += 1
-        self.next_level(self.current_level)
+            else:
+                self.current_level += 1
+            self.next_level(self.levels[self.current_level])
+
 
                 
 

@@ -104,6 +104,7 @@ class Player(Sprite):
         if hits:
             self.kill()
             self.game.game_over = True
+            self.run = False
 
 
 # This function checks for x and y collisions in sequence and sets the position 
