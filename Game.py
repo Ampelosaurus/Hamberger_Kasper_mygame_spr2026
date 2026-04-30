@@ -43,8 +43,8 @@ class Game:
             w.kill()
         for m in self.all_mobs:
             m.kill()
-        # for p in self.all_powerups:
-        #     p.kill()
+        for p in self.all_projectiles:
+            p.kill()
         self.player.kill()
         self.load_data(map)
         # builds the level
@@ -58,11 +58,14 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'S':
+                     Snail(self, col, row)
 
     def new(self):
         self.load_data(self.levels[self.current_level])
         # builds the level
         self.all_sprites = pg.sprite.Group()
+        self.all_players = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
         self.all_mobs = pg.sprite.Group()
         self.all_projectiles = pg.sprite.Group()
@@ -76,6 +79,8 @@ class Game:
                      self.player = Player(self, col, row)
                 if tile == 'M':
                      Mob(self, col, row)
+                if tile == 'S':
+                     Snail(self, col, row)
                     
         self.run()
 
@@ -112,7 +117,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
 
-        if len(self.all_mobs) < 1:
+        if len(self.all_mobs) < 1 and len(self.all_players) == 1:
             if self.current_level >= len(self.levels)-1:
                 self.current_level = 0
             else:

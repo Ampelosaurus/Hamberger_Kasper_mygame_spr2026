@@ -30,7 +30,7 @@ def collide_with_walls(sprite, group, dir):
 
 class Player(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.all_players
         Sprite.__init__(self, self.groups)
         self.game = game
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "sprite_sheet.png"))
@@ -104,8 +104,7 @@ class Player(Sprite):
         if hits:
             self.kill()
             self.game.game_over = True
-            self.run = False
-
+            pg.quit
 
 # This function checks for x and y collisions in sequence and sets the position 
 
@@ -126,7 +125,6 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.speed = PLAYER_SPEED
         self.hit_rect = PLAYER_HIT_RECT
         self.pricked = 0
-        # alive_mobs += 1
     def update(self):
         direction = self.game.player.pos - self.pos
         # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
@@ -141,16 +139,17 @@ class Mob(Sprite): #Elm Leaf Beetle
         collide_with_walls(self, self.game.all_walls, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.all_walls, 'y')
-        self.rect.center = self.hit_rect.center
+        # self.rect.center = self.hit_rect.center
         insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True) # help from ChatGPT
         if insect_pin: 
             self.pricked += 1
             if self.pricked >= 20:
                 self.kill()
+        self.rect.center = self.pos
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
         #self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
-        
+
 class Snail(Sprite): #Garden Snail
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_mobs
@@ -166,6 +165,7 @@ class Snail(Sprite): #Garden Snail
         self.speed = PLAYER_SPEED / 2
         self.hit_rect = PLAYER_HIT_RECT
         self.pricked = 0
+        # alive_mobs += 1
     def update(self):
         direction = self.game.player.pos - self.pos
         # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
@@ -188,6 +188,7 @@ class Snail(Sprite): #Garden Snail
                 self.kill()
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+        #self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
 # objects
 class Wall(Sprite):
