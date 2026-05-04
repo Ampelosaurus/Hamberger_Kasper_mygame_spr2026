@@ -149,7 +149,82 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
         #self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
-\
+class Snail(Sprite): #Garden Snail
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_mobs
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Snail_Sprite.png"))
+        self.load_image()
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = PLAYER_SPEED * 25
+        self.hit_rect = PLAYER_HIT_RECT 
+        self.pricked = 0
+    def update(self):
+        direction = self.game.player.pos - self.pos
+        # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
+        if direction.length() != 0:
+            direction = direction.normalize()
+        self.vel = direction * self.speed * self.game.dt
+
+        self.rect.center = self.pos
+        self.pos += self.vel * self.game.dt
+        
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.all_walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.all_walls, 'y')
+        insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True) # help from ChatGPT
+        if insect_pin: 
+            self.pricked += 1
+            if self.pricked >= 40:
+                self.kill()
+        self.rect.center = self.pos
+    def load_image(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+
+class Butterfly(Sprite): #Small White
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_mobs
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Butterfly_Sprite.png"))
+        self.load_image()
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = PLAYER_SPEED * 25
+        self.hit_rect = PLAYER_HIT_RECT 
+        self.pricked = 0
+    def update(self):
+        direction = self.game.player.pos - self.pos
+        # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
+        if direction.length() != 0:
+            direction = direction.normalize()
+        self.vel = direction * self.speed * self.game.dt
+
+        self.rect.center = self.pos
+        self.pos += self.vel * self.game.dt
+        
+        # self.hit_rect.centerx = self.pos.x
+        # collide_with_walls(self, self.game.all_walls, 'x')
+        # self.hit_rect.centery = self.pos.y
+        # collide_with_walls(self, self.game.all_walls, 'y')
+        insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True) # help from ChatGPT
+        if insect_pin: 
+            self.pricked += 1
+            if self.pricked >= 20:
+                self.kill()
+        self.rect.center = self.pos
+    def load_image(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+
 # objects
 class Wall(Sprite):
     def __init__(self, game, x, y):

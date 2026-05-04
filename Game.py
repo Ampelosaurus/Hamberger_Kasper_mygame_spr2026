@@ -19,7 +19,7 @@ class Game:
         self.running = True
         self.playing = True
         self.game_cooldown = Cooldown(5000)
-        self.levels = ['level1.txt', 'level2.txt', 'level3.txt']
+        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt']
         self.current_level = 0
         self.game_over = False
         self.pricked = 0
@@ -35,6 +35,8 @@ class Game:
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Wall.png')).convert_alpha()
         self.Player_img = pg.image.load(path.join(self.img_dir, 'sprite_sheet.png')).convert_alpha()
         self.Mob_img = pg.image.load(path.join(self.img_dir, 'Mob_Sprite.png')).convert_alpha()
+        self.Snail_img = pg.image.load(path.join(self.img_dir, 'Snail_Sprite.png')).convert_alpha()
+        self.Butterfly_img = pg.image.load(path.join(self.img_dir, 'Butterfly_Sprite.png')).convert_alpha()
         self.map = Map(path.join(self.game_dir, map))
                     
     def next_level(self, map):
@@ -59,7 +61,9 @@ class Game:
                 if tile == 'M':
                     Mob(self, col, row)
                 if tile == 'S':
-                     Snail(self, col, row)
+                    Snail(self, col, row)
+                if tile == 'B':
+                    Butterfly(self, col, row)
 
     def new(self):
         self.load_data(self.levels[self.current_level])
@@ -81,6 +85,9 @@ class Game:
                      Mob(self, col, row)
                 if tile == 'S':
                      Snail(self, col, row)
+                if tile == 'B':
+                    Butterfly(self, col, row)
+
                     
         self.run()
 
