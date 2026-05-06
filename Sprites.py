@@ -53,9 +53,9 @@ class Player(Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_p]:
-            p = Projectile(self.game, self.pos.x, self.pos.y, vec(1,1))
-            p = Projectile(self.game, self.pos.x, self.pos.y, vec(0,-1))
-            p = Projectile(self.game, self.pos.x, self.pos.y, vec(-1,1))
+            p = Projectile1(self.game, self.pos.x, self.pos.y, vec(0,-1))
+            p = Projectile2(self.game, self.pos.x, self.pos.y, vec(-1,1))
+            p = Projectile3(self.game, self.pos.x, self.pos.y, vec(1,1))
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -242,13 +242,13 @@ class Wall(Sprite):
  
 
 
-class Projectile(Sprite):
+class Projectile1(Sprite):
     def __init__(self, game, x, y, vel):
         self.groups = game.all_sprites, game.all_projectiles
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
-        self.image.fill(LEAF_GREEN)
+        self.image = game.Projecile_img_1
         self.rect = self.image.get_rect()
         self.vel = vel 
         self.pos = vec(x,y)
@@ -259,7 +259,42 @@ class Projectile(Sprite):
         self.rect.center = self.pos
         if pg.sprite.spritecollideany(self, self.game.all_walls): # deletes itself if it collides with a wall
             self.kill()
-    
+
+class Projectile2(Sprite):
+    def __init__(self, game, x, y, vel):
+        self.groups = game.all_sprites, game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
+        self.image = game.Projecile_img_2
+        self.rect = self.image.get_rect()
+        self.vel = vel 
+        self.pos = vec(x,y)
+        self.speed = 500
+        self.rect.center = self.pos
+    def update(self):
+        self.pos += self.vel * self.speed * self.game.dt
+        self.rect.center = self.pos
+        if pg.sprite.spritecollideany(self, self.game.all_walls): # deletes itself if it collides with a wall
+            self.kill()
+class Projectile3(Sprite):
+    def __init__(self, game, x, y, vel):
+        self.groups = game.all_sprites, game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE/2, TILESIZE/2))
+        self.image = game.Projecile_img_3
+        self.rect = self.image.get_rect()
+        self.vel = vel 
+        self.pos = vec(x,y)
+        self.speed = 500
+        self.rect.center = self.pos
+    def update(self):
+        self.pos += self.vel * self.speed * self.game.dt
+        self.rect.center = self.pos
+        if pg.sprite.spritecollideany(self, self.game.all_walls): # deletes itself if it collides with a wall
+            self.kill()
+
 #Mob ideas:
 # Elm Leaf Beetle - generic enemy that chases player
 # Garden Snail - slower but more health
