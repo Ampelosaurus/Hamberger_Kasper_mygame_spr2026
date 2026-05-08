@@ -1,4 +1,5 @@
 import pygame as pg
+import time as t
 from pygame.sprite import Sprite
 from Settings import *
 from Utils import *
@@ -68,7 +69,7 @@ class Player(Sprite):
             self.vel *= 0.7071
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
-        self.death_frame = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
+        self.death_frame = [self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
         # for frame in self.standing_frames:
         #     frame.set_colorkey(BLACK)
         # for frame in self.moving_frames:
@@ -91,7 +92,7 @@ class Player(Sprite):
     def update(self):
         self.get_keys()
         self.state_check()
-        #self.animate()
+        #self.animate
         # when it collides with a wall, it pushes it back
         self.rect.center = self.pos 
         self.pos += self.vel * self.game.dt
@@ -102,9 +103,9 @@ class Player(Sprite):
         self.rect.center = self.hit_rect.center
         hits = pg.sprite.spritecollide(self, self.game.all_mobs, True) # dies if it hits a mob, got help from ChatGPT
         if hits:
+            t.sleep(1)
             self.kill()
             self.game.game_over = True
-            pg.quit
 
 # This function checks for x and y collisions in sequence and sets the position 
 
@@ -147,7 +148,7 @@ class Mob(Sprite): #Elm Leaf Beetle
         self.rect.center = self.pos
     def load_image(self):
         self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
-        #self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
+        self.moving_frames = [self.spritesheet.get_image(TILESIZE*2,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE*3,0,TILESIZE,TILESIZE)]
 
 class Snail(Sprite): #Garden Snail
     def __init__(self, game, x, y):
@@ -199,7 +200,7 @@ class Butterfly(Sprite): #Small White
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
-        self.speed = PLAYER_SPEED * 25
+        self.speed = PLAYER_SPEED * 50
         self.hit_rect = PLAYER_HIT_RECT 
         self.pricked = 0
     def update(self):
@@ -219,7 +220,7 @@ class Butterfly(Sprite): #Small White
         insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True) # help from ChatGPT
         if insect_pin: 
             self.pricked += 1
-            if self.pricked >= 20:
+            if self.pricked >= 10:
                 self.kill()
         self.rect.center = self.pos
     def load_image(self):

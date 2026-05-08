@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+import time as t
 # accesses the data from other files in the project
 from os import path
 from Settings import *
@@ -19,7 +20,7 @@ class Game:
         self.running = True
         self.playing = True
         self.game_cooldown = Cooldown(5000)
-        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt']
+        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt']
         self.current_level = 0
         self.game_over = False
         self.pricked = 0
