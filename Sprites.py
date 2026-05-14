@@ -1,5 +1,4 @@
 import pygame as pg
-import time as t
 from pygame.sprite import Sprite
 from Settings import *
 from Utils import *
@@ -103,9 +102,20 @@ class Player(Sprite):
         self.rect.center = self.hit_rect.center
         hits = pg.sprite.spritecollide(self, self.game.all_mobs, True) # dies if it hits a mob, got help from ChatGPT
         if hits:
-            t.sleep(1)
+            self.spritesheet = Spritesheet(path.join(self.game.img_dir, "death_sprite.png"))
+            self.load_image()
+
+            self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+            self.rect = self.image.get_rect(center=self.rect.center)
+
+            self.dying = True
+            self.death_time = pg.time.get_ticks()
             self.kill()
             self.game.game_over = True
+        # if self.dying:
+        #     if pg.time.get_ticks() - self.death_time > 1000:
+        #         self.kill()
+        #         self.game.game_over = True
 
 # This function checks for x and y collisions in sequence and sets the position 
 

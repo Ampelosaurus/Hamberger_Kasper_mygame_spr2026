@@ -1,6 +1,5 @@
 import pygame as pg
 import sys
-import time as t
 # accesses the data from other files in the project
 from os import path
 from Settings import *
@@ -20,9 +19,10 @@ class Game:
         self.running = True
         self.playing = True
         self.game_cooldown = Cooldown(5000)
-        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt']
+        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt']
         self.current_level = 0
         self.game_over = False
+        self.dying = False
         self.pricked = 0
         alive_mobs = 0
 
@@ -35,6 +35,7 @@ class Game:
         self.img_dir = path.join(self.game_dir, 'images')
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Wall.png')).convert_alpha()
         self.Player_img = pg.image.load(path.join(self.img_dir, 'sprite_sheet.png')).convert_alpha()
+        self.Dead_Player_img = pg.image.load(path.join(self.img_dir, 'death_sprite.png')).convert_alpha()
         self.Projecile_img_1 = pg.image.load(path.join(self.img_dir, 'Projectile_Sprite_1.png')).convert_alpha()
         self.Projecile_img_2 = pg.image.load(path.join(self.img_dir, 'Projectile_Sprite_2.png')).convert_alpha()
         self.Projecile_img_3 = pg.image.load(path.join(self.img_dir, 'Projectile_Sprite_3.png')).convert_alpha()
@@ -162,6 +163,8 @@ class Game:
 
 if __name__ == "__main__":
     g = Game()
+
+
 
 while g.running:
     g.new()
