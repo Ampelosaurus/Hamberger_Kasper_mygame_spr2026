@@ -1,4 +1,5 @@
 import pygame as pg
+import time as t
 import sys
 # accesses the data from other files in the project
 from os import path
@@ -19,7 +20,7 @@ class Game:
         self.running = True
         self.playing = True
         self.game_cooldown = Cooldown(5000)
-        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt']
+        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt', 'level8.txt', 'level9.txt']
         self.current_level = 0
         self.game_over = False
         self.dying = False
@@ -42,6 +43,7 @@ class Game:
         self.Mob_img = pg.image.load(path.join(self.img_dir, 'Mob_Sprite.png')).convert_alpha()
         self.Snail_img = pg.image.load(path.join(self.img_dir, 'Snail_Sprite.png')).convert_alpha()
         self.Butterfly_img = pg.image.load(path.join(self.img_dir, 'Butterfly_Sprite.png')).convert_alpha()
+        self.Mantis_img = pg.image.load(path.join(self.img_dir, 'Mantis_Sprite.png')).convert_alpha()
         self.map = Map(path.join(self.game_dir, map))
                     
     def next_level(self, map):
@@ -69,6 +71,8 @@ class Game:
                     Snail(self, col, row)
                 if tile == 'B':
                     Butterfly(self, col, row)
+                if tile == 'カ':
+                    Mantis(self, col, row)
 
     def new(self):
         self.load_data(self.levels[self.current_level])
@@ -92,6 +96,8 @@ class Game:
                      Snail(self, col, row)
                 if tile == 'B':
                     Butterfly(self, col, row)
+                if tile == 'X':
+                    Mantis(self, col, row)
 
                     
         self.run()

@@ -1,4 +1,5 @@
 import pygame as pg
+import time as t
 from pygame.sprite import Sprite
 from Settings import *
 from Utils import *
@@ -102,14 +103,12 @@ class Player(Sprite):
         self.rect.center = self.hit_rect.center
         hits = pg.sprite.spritecollide(self, self.game.all_mobs, True) # dies if it hits a mob, got help from ChatGPT
         if hits:
-            self.spritesheet = Spritesheet(path.join(self.game.img_dir, "death_sprite.png"))
-            self.load_image()
+            # self.spritesheet = Spritesheet(path.join(self.game.img_dir, "death_sprite.png"))
+            # self.load_image()
 
-            self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
-            self.rect = self.image.get_rect(center=self.rect.center)
-
-            self.dying = True
-            self.death_time = pg.time.get_ticks()
+            # self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+            # self.rect = self.image.get_rect(center=self.rect.center)
+            t.sleep(1)
             self.kill()
             self.game.game_over = True
         # if self.dying:
@@ -231,6 +230,44 @@ class Butterfly(Sprite): #Small White
         if insect_pin: 
             self.pricked += 1
             if self.pricked >= 10:
+                self.kill()
+        self.rect.center = self.pos
+    def load_image(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0,TILESIZE,TILESIZE), self.spritesheet.get_image(TILESIZE,0,TILESIZE,TILESIZE)]
+
+class Mantis(Sprite): #Mediterranean Mantis
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_mobs
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "Mantis_Sprite.png"))
+        self.load_image()
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image = self.spritesheet.get_image(0,0,TILESIZE,TILESIZE)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = PLAYER_SPEED * 45
+        self.hit_rect = PLAYER_HIT_RECT 
+        self.pricked = 0
+    def update(self):
+        direction = self.game.player.pos - self.pos
+        # normalize keeps the speed consistently at one as otherwise, the speed would depend on the distance from the player
+        if direction.length() != 0:
+            direction = direction.normalize()
+        self.vel = direction * self.speed * self.game.dt
+
+        self.rect.center = self.pos
+        self.pos += self.vel * self.game.dt
+        
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.all_walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.all_walls, 'y')
+        insect_pin = hits = pg.sprite.spritecollide(self, self.game.all_projectiles, True) # help from ChatGPT
+        if insect_pin: 
+            self.pricked += 1
+            if self.pricked >= 100:
                 self.kill()
         self.rect.center = self.pos
     def load_image(self):

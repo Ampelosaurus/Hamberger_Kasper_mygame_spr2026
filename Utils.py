@@ -44,4 +44,3 @@ class Cooldown:
         if current_time - self.start_time >= self.time: #sees how much time has passed
             return True
         return False
-    
