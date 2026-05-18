@@ -20,7 +20,7 @@ class Game:
         self.running = True
         self.playing = True
         self.game_cooldown = Cooldown(5000)
-        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt', 'level8.txt', 'level9.txt']
+        self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt', 'level8.txt', 'level9.txt', 'level10.txt']
         self.current_level = 0
         self.game_over = False
         self.dying = False
