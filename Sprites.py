@@ -54,9 +54,9 @@ class Player(Sprite):
         self.vel = vec(0,0)
         keys = pg.key.get_pressed()
         if keys[pg.K_p]:
-            p = Projectile1(self.game, self.pos.x, self.pos.y, vec(0,-1))
-            p = Projectile2(self.game, self.pos.x, self.pos.y, vec(-1,1))
-            p = Projectile3(self.game, self.pos.x, self.pos.y, vec(1,1))
+            p = Projectile1(self.game, self.pos.x, self.pos.y, vec(0,-1)) # upward
+            p = Projectile2(self.game, self.pos.x, self.pos.y, vec(-1,1)) # bottom left
+            p = Projectile3(self.game, self.pos.x, self.pos.y, vec(1,1)) # bottom right
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -108,7 +108,7 @@ class Player(Sprite):
 
             # self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
             # self.rect = self.image.get_rect(center=self.rect.center)
-            t.sleep(1)
+            t.sleep(1) #Freezes everything for 1 seccond
             self.kill()
             self.game.game_over = True
         # if self.dying:
@@ -342,9 +342,3 @@ class Projectile3(Sprite):
         self.rect.center = self.pos
         if pg.sprite.spritecollideany(self, self.game.all_walls): # deletes itself if it collides with a wall
             self.kill()
-
-#Mob ideas:
-# Elm Leaf Beetle - generic enemy that chases player
-# Garden Snail - slower but more health
-# Small White - bypass walls but less health
-# Mediterranean Mantis - Boss that can rush forward and can also bypass walls, but takes longer to bypass them

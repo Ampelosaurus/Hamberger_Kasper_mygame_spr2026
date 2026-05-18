@@ -23,7 +23,6 @@ class Game:
         self.levels = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level5.txt', 'level6.txt', 'level8.txt', 'level9.txt', 'level10.txt']
         self.current_level = 0
         self.game_over = False
-        self.dying = False
         self.pricked = 0
         alive_mobs = 0
 
@@ -86,7 +85,7 @@ class Game:
         for row, tiles in enumerate(self.map.data):
             for col, tile, in enumerate(tiles):
                 if tile == '1':
-                     # call class constructor without assiging variable...when
+                     # if it detects the symbol in a .txt, it will generate the sprite there
                      Wall(self, col, row)
                 if tile == 'P':
                      self.player = Player(self, col, row)
